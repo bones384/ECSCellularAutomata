@@ -1,6 +1,3 @@
-//
-// Created by mkowa on 02.04.2024.
-//
 
 #pragma once
 #include <chrono>
@@ -10,25 +7,28 @@
 /**
  * @brief Przestrzeń nazw dla @ref perlin.h
  */
+
 namespace perlin {
     /**
      * @brief Prosta struktura reprezentująca dwuwymiarowy wektor.
      */
+    template<typename T>
     struct vector2 {
-        double x, y;
-        vector2(double xi, double yi) : x(xi), y(yi) {}
+        T x, y;
+        vector2(T xi, T yi) : x(xi), y(yi) {}
 /**
  * @brief Metoda licząca dot product pomiędzy tym wektorem a innym
  * @param other drugi wektor
  * @return
  */
-        [[nodiscard]] double dot(vector2 other) const {
+        [[nodiscard]] T dot(vector2 other) const {
             return x*other.x + y*other.y;
         }
     };
     /**
      * @brief Klasa reprezentująca pojedyńczą powierzchnię zapełnioną szumem Perlina.
      */
+     template <typename T>
     class PerlinGenerator
     {
         /**
@@ -38,7 +38,7 @@ namespace perlin {
         /**
          * @brief Dystrybucja floatów od -1.0 do 1.0
          */
-        std::uniform_real_distribution<float> m_dist{-1.0, 1.0};
+        std::uniform_real_distribution<T> m_dist{-1.0, 1.0};
         /**
          * @brief Dystrybucja intów od 0 do 1 (losowy bool)
          */
@@ -52,18 +52,9 @@ namespace perlin {
          *
          *  Metoda zostaje w kodzie tylko dla porównania z zastępcą.
          */
-        [[deprecated("Stara wersja funkcji, perlin::lerp() jest szybsza")]] float interpolate(float a0, float a1, float w);
-        [[deprecated]] vector2 randomGradient(int ix, int iy);
-        [[deprecated]] double dotGridGradient(int ix, int iy, float x, float y);
+
     public:
         PerlinGenerator() : m_seed(std::chrono::system_clock::now().time_since_epoch().count()) {}
-      /**
-       * @brief Stara funkcja licząca wartość szumu w punkcie x,y. Generuje bardzo ładne wyniki, jednak robi to bardzo powolnie. Zastąpiona przez @ref perlin::PerlinGenerator::getNoise2D która korzystając z pewnych przybliżeń i uproszczeń jest znacznie szybsza.
-       * @param x
-       * @param y
-       * @return
-       */
-      [[deprecated("Zastąpiona przez perlin::PerlinGenerator::getNoise2D, która jest szybsza")]] double perlin(double x, double y);
       /**
        * @brief Metoda licząca wartość szumu Perlina w podanym punkcie
        * @param x współrzędna x'owa punktu, o który pytamy
@@ -71,7 +62,7 @@ namespace perlin {
        * @param Permutation wektor kątów wektorów jednostkowych
        * @return wartość szumu w punkcie jako double
        */
-        double getNoise2D(double x, double y, std::vector<double> Permutation);
+        T getNoise2D(T x, T y, std::vector<T> Permutation);
 /**
  * @brief Korzysta z @ref perlin::PerlinGenerator::getNoise2D by wygenerować wielooktawowy szum Perlina
  * @param x współrzędna x'owa punktu, o który pytamy
@@ -80,14 +71,15 @@ namespace perlin {
  * @param Permutation wektor kątów wektorów jednostkowych
  * @return wartość szumu w punkcie jako double
  */
-        double getMultiOctaveNoise2D(int x, int y, int numOctaves, const std::vector<double>& Permutation);
+        T getMultiOctaveNoise2D(int x, int y, int numOctaves, const std::vector<T>& Permutation);
 
     };
     /**
      * @brief Zwraca wektor wypełniony losowymi wartościami w zakresie <0;2pi>
      * @return @ref std::vector<double> zapełniony wartościami <0;2pi>
      */
-    std::vector<double> generateRandomAngles();
+    template<typename R>
+    std::vector<R> generateRandomAngles();
     template<typename T>
 /**
  * @brief Funkcja do szybkiego przybliżonego liczenia cosinusa. (znacznie szybsza od standardowej)
@@ -101,12 +93,14 @@ namespace perlin {
      * @param v kąt z którego robimy wektor
      * @return jednostkowy perlin::vector2 o podanym nachyleniu
      */
-    vector2 getVectorFromAngle(double v);
-
-    double fade(double t);
+    template<typename T>
+    vector2<T> getVectorFromAngle(T v);
+    template<typename T>
+    T fade(T t);
 /**
  * @brief Funkcja zwracająca interpolację liniową pomiędzy a1 i a2 o wartości czasu t
  */
-    double lerp(double t, double a1, double a2);
+    template<typename T>
+    T lerp(T t, T a1, T a2);
 
 }

@@ -4,6 +4,8 @@
 #include "display.h"
 #include <charconv>
 #include <queue>
+#include "perlin.h"
+#include "perlin.cpp"
 #include <fstream>
 #define RAYGUI_IMPLEMENTATION // Required for GUI controls
 #include "raygui.h" // GUI controls by RaySan, Open Source license (zlib)
@@ -24,14 +26,14 @@
  * @param vars parametry symulacji, które mają zostać załadowane
  * @param font czcionka do renderowania tekstu
  */
-void startFireSim(ecs::firevars vars, Font font)
+void startFireSim(ecs::firevars<double> vars, Font font)
 {
-    perlin::PerlinGenerator pg;
+    perlin::PerlinGenerator<double> pg;
     EndDrawing();
     display::Screen testscreen(vars.dx,vars.dy);
     ecs::Game test(testscreen);
     RenderTexture2D renderTexture = LoadRenderTexture(vars.dx*16, vars.dy*16);
-    std::vector<double> angles = perlin::generateRandomAngles();
+    std::vector<double> angles = perlin::generateRandomAngles<double>();
     Vector2 pos;
     double f;
     for(int i=0;i < vars.dx;i++)
@@ -47,7 +49,7 @@ void startFireSim(ecs::firevars vars, Font font)
     int count=0;
     bool debug =false;
     size_t fire;
-    timer::Timer pollTimer{std::chrono::seconds(1)};
+    timer::Timer<double> pollTimer{std::chrono::seconds(1)};
     while (test.isRunning()) {
         test.update(testscreen);
         testscreen.empty = GREEN;
@@ -119,7 +121,7 @@ void startFireSim(ecs::firevars vars, Font font)
 void openFireConfigMenu(Font font)
 {
     EndDrawing(); // Render buffered menu frame
-    ecs::firevars vars;
+    ecs::firevars<double> vars;
     // GUI variables
     bool dy_editMode = false;
     int dy = 250;
@@ -366,22 +368,7 @@ void startLife(std::string filename, ecs::lifevars vars,int sep=1)
     EndDrawing();
     //endwin();
 };
-/*
-void operators()
-{
-    ecs::lifevars l = {1,5,5,{{1,1},{2,2}}};
-    std::cout<<l;
-    ecs::firevars f = {50,5,5,2.5,1.0,0.7};
-    std::cout<<'\n'<<f;
-    timer::Timer t(std::chrono::seconds(2));
-    auto dif = std::chrono::duration<long long int>(std::chrono::seconds(2));
-    t+dif;
-    while(!t.isFinished())
-    {
-        std::cout<<t.getElapsed()<<std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(250));
-    }
-}*/
+
 /**
  * @brief Otwiera menu konfiguracyjne "Gry w Życie"
  * @param font czcionka do wyświetlania tekstu
@@ -432,8 +419,8 @@ void openLifeControl(Font font, std::string filename)
  * @brief wyświetla test szumu Perlina
  */
 void perlinTest() {
-    perlin::PerlinGenerator pg;
-    std::vector<double> Permutation = perlin::generateRandomAngles();
+    perlin::PerlinGenerator<double> pg;
+    std::vector<double> Permutation = perlin::generateRandomAngles<double>();
     float forestf = 50;
     float preval = -forestf;
     std::vector<std::vector<double>> f(1000);
@@ -538,7 +525,6 @@ int main(int argc, char* argv[]) {
 
         }
         if(IsKeyReleased(KEY_Q)) {perlinTest();}
-        //if(IsKeyReleased(KEY_O)) {operators();}
 
         EndDrawing();
     }

@@ -1,6 +1,4 @@
-//
-// Created by mkowa on 27.08.2024.
-//
+
 
 #include <raylib.h>
 #include <unordered_map>
@@ -16,9 +14,6 @@
 #include <fstream>
 
 #include "ecs.h"
-//
-// Created by mkowa on 27.08.2024.
-//
 
 
 
@@ -29,11 +24,11 @@ ecs::life_component::life_component(bool state) : cellstate(state) {}
 
 ecs::spreadable_component::spreadable_component(std::unordered_set<char> spread, float interval) :
 
-dspread_timer(timer::Timer(std::chrono::milliseconds((int) (interval * 1000)))), spreads_to(std::move(spread)) {}
+dspread_timer(timer::Timer<double>(std::chrono::milliseconds((int) (interval * 1000)))), spreads_to(std::move(spread)) {}
 
 ecs::fire_component::fire_component(std::unordered_set<char> spread, float interval, float btimer, int chanced) :
 spreadable_component(std::move(spread), interval),
-burnout_timer(timer::Timer(std::chrono::milliseconds((((int) (btimer * 1000)))))), chance(chanced) {}
+burnout_timer(timer::Timer<double>(std::chrono::milliseconds((((int) (btimer * 1000)))))), chance(chanced) {}
 
 template<class T1, class T2>
 unsigned long long int ecs::PairHash::operator()(const std::pair<T1, T2> &v) const {
@@ -268,7 +263,7 @@ m_steptimer.reset();
 
 }
 
-ecs::life_system::life_system(float dur) : m_steptimerdur(dur), m_steptimer(timer::Timer((std::chrono::milliseconds((((int) (dur * 1000))))))){
+ecs::life_system::life_system(float dur) : m_steptimerdur(dur), m_steptimer(timer::Timer<double>((std::chrono::milliseconds((((int) (dur * 1000))))))){
 m_steptimer.reset();
 }
 
@@ -358,7 +353,7 @@ std::ostream &ecs::operator<<(std::ostream &F, const ecs::lifevars &w) {
     }
     return F;
 }
-
-std::ostream &ecs::operator<<(std::ostream &F, const ecs::firevars &w) {
+template <typename T>
+std::ostream &ecs::operator<<(std::ostream &F, const ecs::firevars<T> &w) {
     return F << w.dx << " " << w.dy<< "\n"<<"Burn time: "<<w.fire_burn_time<< "\n"<< "Spread int:" << w.fire_spread_time<< "\n" << "Spread chance: "<<w.fire_spread_chance<< "\n" << " Forest: "<<w.forest<< "\n";
 }

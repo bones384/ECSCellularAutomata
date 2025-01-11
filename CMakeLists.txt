@@ -29,7 +29,6 @@ add_executable(${PROJECT_NAME} main.cpp
         display.cpp
         coinflip.cpp
         perlin.cpp
-        timer.cpp
         tinyfiledialogs.c
         raygui.c
         text.cpp

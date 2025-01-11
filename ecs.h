@@ -26,10 +26,11 @@ namespace ecs {
     /**
      * @brief Struktura przechowująca konfigurację symulacji ognia
      */
+    template <typename T>
     struct firevars
     {
         int fire_spread_chance,dx,dy;
-        float fire_burn_time, fire_spread_time, forest;
+        T fire_burn_time, fire_spread_time, forest;
     };
     /**
      * @brief Struktura przechowująca konfigurację gry w życie
@@ -40,7 +41,8 @@ namespace ecs {
         int dx,dy;
         std::vector<std::pair<int,int>> alives;
     };
-    std::ostream& operator << (std::ostream & F, firevars const & w);
+    template<typename T>
+    std::ostream& operator << (std::ostream & F, firevars<T> const & w);
     std::ostream& operator << (std::ostream & F, lifevars const & w);
     /**
      * @brief Komponent pozycji, przechowuje dane o tym gdzie jest dana jednostka, i jak tą jednostkę wyświetlić
@@ -64,14 +66,14 @@ namespace ecs {
  */
     struct spreadable_component {
         std::unordered_set<char> spreads_to;
-        timer::Timer dspread_timer;
+        timer::Timer<double> dspread_timer;
         spreadable_component(std::unordered_set<char> spread, float interval);
     };
 /**
  * @brief Komponent ognia, oprócz danych przechowywanych w typowym @ref ecs::spreadable_component przechowuje dodatkowo licznik czasu do jego usunięcia oraz szansę na rozprzestrzenienie.
  */
     struct fire_component : public spreadable_component {
-        timer::Timer burnout_timer;
+        timer::Timer<double> burnout_timer;
         int chance;
 
         fire_component(std::unordered_set<char> spread, float interval, float btimer, int chanced);
@@ -181,7 +183,7 @@ namespace ecs {
     class life_system {
         bool m_is_paused=true; /**< @brief Czy gra jest zapauzowana? */
         float m_steptimerdur; /**< @brief Ile czasu pomiędzy krokami symulacji? */
-        timer::Timer m_steptimer; /**< @brief Licznik czasu do kolejnego kroku */
+        timer::Timer<double> m_steptimer; /**< @brief Licznik czasu do kolejnego kroku */
     public:
         /**
          * @brief Zwraca czy symulacja gry życia jest zapauzowana, czy nie, jako bool
