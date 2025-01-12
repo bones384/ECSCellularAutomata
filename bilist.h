@@ -126,7 +126,7 @@ namespace bilist {
             obj.m_last = nullptr;
         }
 
-        size_t size() {
+        size_t size() const {
             return m_size;
         }
 
@@ -236,11 +236,11 @@ namespace bilist {
             }
         }
 
-        iterator begin() {
+        iterator begin() const {
             return iterator(m_first);
         }
 
-        iterator end() {
+        iterator end() const {
             return iterator(nullptr);
         }
 

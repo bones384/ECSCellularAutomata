@@ -9,7 +9,7 @@ std::vector<R> perlin::generateRandomAngles() {
     return permutation;
 }
 template<typename T>
-inline T perlin::fastcos(T x) noexcept
+inline T perlin::fastcos(T x)
 {
     constexpr T tp = 1./(2.*M_PI);
     x *= tp;

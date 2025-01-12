@@ -268,7 +268,6 @@ void startLife(std::string filename, ecs::lifevars vars,int sep=1)
                 stream.close();
             }
             else tinyfd_messageBox("Błąd: Nie można przywrócić stanu","Plik .temp nie znaleziony lub uszkodzony!","ok","error",1);
-
         }
         started=false;
 
@@ -329,6 +328,7 @@ void startLife(std::string filename, ecs::lifevars vars,int sep=1)
                         }
                     }
                     stream.close();
+
                     started=true;
                 }
                 test.game_life_system.update(test.getRegistry(),1);
@@ -469,7 +469,7 @@ void perlinTest() {
 int main(int argc, char* argv[]) {
     // Initialise window 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(500,500,"Projekt PK2");
+    InitWindow(500,500,"Projekt PK3");
     SetWindowMinSize(300,300);
     SetTargetFPS(60);
     // Load graphics to VRAM
@@ -485,7 +485,7 @@ int main(int argc, char* argv[]) {
       ClearBackground(BLACK);
       // Draw FPS and GUI
       DrawFPS(0,1);
-      drawTextEx(font,TextFormat("Projekt PK2"),500,250,128,0,RED,1,1,1);
+      drawTextEx(font,TextFormat("Projekt PK3"),500,250,128,0,RED,1,1,1);
       drawTextEx(font,TextFormat("Symulacja Ognia"),500,500,64,0,c1,1,1,1 );
       drawTextEx(font,TextFormat("Gra w Zycie Conway'a"),500,574,64,0,c2,1,1,1);
       drawTextEx(font,TextFormat("Wyjdz"),500,638,64,0,c3,1,1,1);

@@ -2,7 +2,7 @@
 // Created by mkowa on 27.08.2024.
 //
 #pragma once
-
+#include "bilist.h"
 #include <unordered_set>
 #include <unordered_map>
 #include <queue>
@@ -39,7 +39,8 @@ namespace ecs {
     {
         bool ok = false;
         int dx,dy;
-        std::vector<std::pair<int,int>> alives;
+        //std::vector<std::pair<int,int>> alives;
+        bilist::bilist<std::pair<int,int>> alives;
     };
     template<typename T>
     std::ostream& operator << (std::ostream & F, firevars<T> const & w);
@@ -128,14 +129,14 @@ namespace ecs {
          * @param a jednostka
          * @return std::vector identyfikatorów sąsiednich jednostek
          */
-        static std::vector<unsigned long long int> getNeighbours(ecs::registry &r_reg, unsigned long long int a);
+        static bilist::bilist<unsigned long long int> getNeighbours(ecs::registry &r_reg, unsigned long long int a);
     };
     /**
     * @brief System obsługi jednostek ognia.
     */
     struct fire_system : spreading_system {
         static unsigned int counter;
-        std::queue<unsigned long long int> firequeue;
+        std::queue<unsigned long long int,bilist::queue_adaptor<unsigned long long int>> firequeue;
         /**
          * @brief Jak każda funkcja systemowa update, Wywoływana co klatkę. Aktualizuje i rozprzestrzenia odpowiednie komponenty.
          * @param r_reg rejestr komponentów do zaktualizowania
@@ -210,7 +211,7 @@ namespace ecs {
         /**
          * @brief Kolejka komponentów, których stan trzeba zmienić
          */
-        std::queue<unsigned long long int> switchq;
+        std::queue<unsigned long long int,bilist::queue_adaptor<unsigned long long int>> switchq;
         /**
          * @brief Jak każda funkcja systemowa update, Wywoływana co klatkę. Aktualizuje i zmienia stan odpowiednich komponentów
          * @param r_reg rejestr komponentów do zaktualizowania
@@ -244,7 +245,7 @@ namespace ecs {
          * @param a badana jednostka
          * @return kolejka identyfikatorów żywych sąsiadów tej komórki
          */
-        static std::queue<unsigned long long int> getLiveNeighbours(ecs::registry &r_reg, unsigned long long int a);
+        static std::queue<unsigned long long int,bilist::queue_adaptor<unsigned long long int>> getLiveNeighbours(ecs::registry &r_reg, unsigned long long int a);
         life_system(float dur = 5);
     };
     /**

@@ -73,8 +73,8 @@ bool ecs::spreading_system::areNeighbours(ecs::registry &r_reg, unsigned long lo
     return false;
 }
 
-std::vector<unsigned long long int> ecs::spreading_system::getNeighbours(ecs::registry &r_reg, unsigned long long int a) {
-    std::vector<unsigned long long int> neighbours;
+bilist::bilist<unsigned long long int> ecs::spreading_system::getNeighbours(ecs::registry &r_reg, unsigned long long int a) {
+    bilist::bilist<unsigned long long int> neighbours;
     if (r_reg.displayable_positions.contains(a)){
         int x = r_reg.displayable_positions.at(a).posx;
         int y = r_reg.displayable_positions.at(a).posy;
@@ -172,7 +172,7 @@ void ecs::life_system::update(ecs::registry &r_reg,bool forced) {
     m_steptimer.duration=std::chrono::milliseconds((((int) (m_steptimerdur * 1000))));
     m_steptimer.reset();
     for (auto &[e, r]: r_reg.lives) {
-        std::queue<unsigned long long int> q = getLiveNeighbours(r_reg, e);
+        std::queue<unsigned long long int,bilist::queue_adaptor<unsigned long long int>> q = getLiveNeighbours(r_reg, e);
         if (!r_reg.lives.at(e).cellstate) {
             if (q.size() == 3) switchq.push(e);
         }
@@ -196,8 +196,8 @@ void ecs::life_system::switchState(unsigned long long int &e, ecs::registry &r_r
     }
 }
 
-std::queue<unsigned long long int> ecs::life_system::getLiveNeighbours(ecs::registry &r_reg, unsigned long long int a) {
-    std::queue<unsigned long long int> neighbours;
+std::queue<unsigned long long int,bilist::queue_adaptor<unsigned long long int>> ecs::life_system::getLiveNeighbours(ecs::registry &r_reg, unsigned long long int a) {
+    std::queue<unsigned long long int,bilist::queue_adaptor<unsigned long long int>> neighbours;
     int x = r_reg.displayable_positions.at(a).posx;
     int y = r_reg.displayable_positions.at(a).posy;
     for (int px = -1; px <= 1; px++) {
@@ -242,7 +242,7 @@ if(in.is_open())
     in>>vars.dx>>vars.dy;
     while(in>>x>>y)
     {
-        vars.alives.emplace_back(x,y);
+        vars.alives.push_back({x,y});
     }
     in.close();
     vars.ok = true;

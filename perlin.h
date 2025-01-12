@@ -87,7 +87,7 @@ namespace perlin {
  * @param x
  * @return
  */
-    inline T fastcos(T x) noexcept;
+    inline T fastcos(T x);
     /**
      * @brief Zwraca wektor jednostkowy nachylony pod kątem v(w radianach) względem osi OY układu współrzędnego
      * @param v kąt z którego robimy wektor
